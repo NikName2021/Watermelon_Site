@@ -3,10 +3,37 @@ from flask import Flask, render_template
 app = Flask(__name__)
 
 
-@app.route('/')
+@app.route('/chat')
 def hello_world():  # put application's code here
     return render_template('chat.html')
 
 
+@app.route('/')
+def index():  # put application's code here
+    return render_template('index.html')
+
+
+def start():  # put application's code here
+    print(1)
+
+
 if __name__ == '__main__':
-    app.run()
+    app.run(on_startup=start)
+
+
+# from flask import Flask, render_template
+# from flask_socketio import SocketIO
+#
+# app = Flask(__name__)
+# app.config['SECRET_KEY'] = 'secret!'
+# socketio = SocketIO(app)
+#
+#
+# @socketio.on('message')
+# def handle_message(data):
+#     print(data)
+#     print('received message:')
+
+
+if __name__ == '__main__':
+    socketio.run(app)

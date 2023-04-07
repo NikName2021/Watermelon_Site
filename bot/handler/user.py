@@ -1,11 +1,18 @@
 import asyncio
-from random import randint
+import json
 
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from bot.additional import *
 from bot.connection import *
 from bot.config import ANSWERS, ANSWERS_FINAL
+
+"""ПОТОМ ВЫНЕСТИ В ДРУГОЕ МЕСТО"""
+
+
+async def socket_send(message, topic):
+    await sio.connect(SOCKET_URL)
+    await sio.emit('message', { 'chat_id': message.chat.id, 'text': message.text, 'topic': topic})
 
 
 # @dp.message_handler(Text(equals="Хочу получить послание дня"))
@@ -49,9 +56,8 @@ async def questions_send_mess(message: types.Message, state: FSMContext):
             topic = data["topic"]
 
         await message.answer(ANSWERS_FINAL[topic], reply_markup=keyboard)
-
-        """Здесь нужно сохранение в бд и отправка на сайт"""
-        print('Новое')
+        await socket_send(message, topic)
+        print(message.chat.id, bot)
 
         for operator in operators:
             await function.mailing(message, operator, "Вопрос")
@@ -61,5 +67,6 @@ async def questions_send_mess(message: types.Message, state: FSMContext):
 
 def register_handler_user(dp: Dispatcher):
     dp.register_message_handler(out_phrase, Text(equals="Хочу получить послание дня"))
-    dp.register_message_handler(question, Text(equals=['У меня есть вопрос', 'SOS! Мне нужна срочная помощь', 'Есть предложение']))
+    dp.register_message_handler(question, Text(
+        equals=['У меня есть вопрос', 'SOS! Мне нужна срочная помощь', 'Есть предложение']))
     dp.register_message_handler(questions_send_mess, state=machine.Question.text)

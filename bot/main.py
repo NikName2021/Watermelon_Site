@@ -1,10 +1,11 @@
+from aiogram import executor
 from connection import *
 from handler import *
 from additional import *
-from aiogram import executor, types
 
 
 async def on_startup(dp):
+
     dp.filters_factory.bind(main_filters.Load)
     dp.filters_factory.bind(main_filters.Ans)
     dp.filters_factory.bind(main_filters.Dele)
@@ -16,6 +17,8 @@ async def on_startup(dp):
 
 add.register_handler_add(dp)
 user.register_handler_user(dp)
+
+
 # operator.register_handler_operator(dp)
 
 
