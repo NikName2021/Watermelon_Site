@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -9,16 +9,30 @@ def hello_world():  # put application's code here
 
 
 @app.route('/')
+@app.route('/index')
 def index():  # put application's code here
     return render_template('index.html')
 
 
-def start():  # put application's code here
-    print(1)
+@app.route('/signin', methods=['POST', 'GET'])
+def signin():  # put application's code here
+    if request.method == 'GET':
+        return render_template('signin.html')
+    elif request.method == 'POST':
+        e = request.form['email']
+        p = request.form['password']
+
+        return '''<html>
+                <head>
+                    <meta http-equiv="Refresh" content="0; URL="/">
+                </head>
+                <body>
+                </body>
+            </html>'''
 
 
 if __name__ == '__main__':
-    app.run(on_startup=start)
+    app.run()
 
 
 # from flask import Flask, render_template
