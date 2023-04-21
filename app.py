@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+import sqlite3
 
 app = Flask(__name__)
 
@@ -21,7 +22,13 @@ def signin():  # put application's code here
     elif request.method == 'POST':
         e = request.form['email']
         p = request.form['password']
-
+        con = sqlite3.connect("database/users.db")
+        cur = con.cursor()
+        result = cur.execute(f"""SELECT * FROM users
+                    WHERE login = '{e}' AND password = '{p}'""").fetchall()
+        if len(result) > 0:
+            print("Login successful")
+        con.close()
         return '''<html>
                 <head>
                     <meta http-equiv="Refresh" content="0; URL="/">
