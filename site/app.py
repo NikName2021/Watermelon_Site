@@ -1,8 +1,11 @@
 import asyncio
+import json
+import sqlite3
 import threading
 from aiogram import executor
 from flask import Flask, render_template, request, redirect, flash
-from loginform import LoginForm
+from loginform import LoginForm, AddPhrase
+from datetime import date
 
 app = Flask(__name__)
 
@@ -16,6 +19,32 @@ def hello_world():  # put application's code here
 @app.route('/index')
 def index():  # put application's code here
     return render_template('base.html')
+
+
+@app.route('/phrases')
+def news():
+    con = sqlite3.connect("../bot/base.db")
+    cur = con.cursor()
+    result = cur.execute("""SELECT * FROM phrase""").fetchall()
+    con.close()
+    return render_template('phrase.html', phrases=result)
+
+
+@app.route('/addp', methods=['GET', 'POST'])
+def addp():
+    form = AddPhrase()
+    if form.validate_on_submit():
+        u = form.phrase.data
+        print(u)
+        con = sqlite3.connect("../bot/base.db")
+        cur = con.cursor()
+        result = cur.execute("""SELECT * FROM phrase""").fetchall()
+        print(result)
+        cur.execute(f"""INSERT INTO phrase VALUES({result[-1][0] + 1}, "{u}", "{date.today()}")""").fetchall()
+        con.commit()
+        con.close()
+        return redirect('/phrases')
+    return render_template('phraseadd.html', title='Добавить фразу', form=form)
 
 
 @app.route('/', methods=['GET', 'POST'])
