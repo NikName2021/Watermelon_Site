@@ -33,12 +33,10 @@ async def start_ad_op(message):
 
 
 async def admin_first():
-    add_admin = KeyboardButton(text="Добавить админа")
     add_operator = KeyboardButton(text="Добавить оператора")
-    operators_and_admin = KeyboardButton(text='Просмотр админов и операторов')
+    operators_and_admin = KeyboardButton(text='Просмотр операторов')
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.add(add_admin, add_operator)
-    keyboard.add(operators_and_admin)
+    keyboard.add(operators_and_admin, add_operator)
     keyboard.add(KeyboardButton(text="Вернуться"))
 
     return keyboard

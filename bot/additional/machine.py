@@ -64,4 +64,5 @@ class Opa(StatesGroup):
         который ожидает id и имя нового оператора
         """
     id = State()
+    password = State()
     name = State()

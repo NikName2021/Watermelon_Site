@@ -1,18 +1,9 @@
 import asyncio
-import json
-
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from bot.additional import *
 from bot.connection import *
-from bot.config import ANSWERS, ANSWERS_FINAL
-
-"""ПОТОМ ВЫНЕСТИ В ДРУГОЕ МЕСТО"""
-
-
-async def socket_send(message, topic):
-    await sio.connect(SOCKET_URL)
-    await sio.emit('message', { 'chat_id': message.chat.id, 'text': message.text, 'topic': topic})
+from bot.config import *
 
 
 # @dp.message_handler(Text(equals="Хочу получить послание дня"))
@@ -30,8 +21,8 @@ async def question(message: types.Message, state: FSMContext):
     await machine.Question.text.set()
     # вход в машину ожиданий сообщений пользователя
     async with state.proxy() as data:
-        data["topic"] = message.text
-    await message.answer(ANSWERS[message.text])
+        data["topic"] = TYPE[message.text]
+    await message.answer(ANSWERS[TYPE[message.text]])
 
 
 # @dp.message_handler(state=machine.Question.text)
@@ -56,11 +47,13 @@ async def questions_send_mess(message: types.Message, state: FSMContext):
             topic = data["topic"]
 
         await message.answer(ANSWERS_FINAL[topic], reply_markup=keyboard)
-        await socket_send(message, topic)
-        print(message.chat.id, bot)
-
-        for operator in operators:
-            await function.mailing(message, operator, "Вопрос")
+        app = Appeals(client_id=message.from_user.id, client_name=message.from_user.full_name, type=topic, status=0)
+        db.add(app)
+        db.flush()
+        db.add(Messages(appeal_id=app.id, operator_type=False, text=message.text))
+        db.commit()
+        # for operator in operators:
+        #     await function.mailing(message, operator, "Вопрос")
         # создание записи обращения в бд
     await state.finish()
 

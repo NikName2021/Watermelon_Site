@@ -17,6 +17,8 @@ async def on_startup(dp):
 
 add.register_handler_add(dp)
 user.register_handler_user(dp)
+operator.register_handler_operator(dp)
+admin.register_handler_admin(dp)
 
 
 # operator.register_handler_operator(dp)
@@ -34,5 +36,9 @@ async def if_the_text(msg: types.Message):
         await msg.answer('Неизвестная для меня команда :(')
 
 
-if __name__ == '__main__':
+def run_bot():
     executor.start_polling(dp, skip_updates=False, on_startup=on_startup)
+
+
+if __name__ == '__main__':
+    run_bot()

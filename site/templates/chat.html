@@ -1,0 +1,112 @@
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
+{#    <title>Bootstrap Chat Example</title>#}
+{#    <!-- Bootstrap 5 CSS -->#}
+{#    <link rel="stylesheet" href={{ url_for('static', filename="assets/css/bootstrap.min.css") }}/>#}
+{#    <!-- Custom CSS -->#}
+{#    <link rel="stylesheet" href="{{ url_for('static', filename="assets/css/chat/style.css") }}"/>#}
+{#</head>#}
+{#<body>#}
+{% extends "index.html" %}
+{% block content %}
+{#    <section class="section">#}
+
+        <div class="row h-100">
+            <div class="col-md-4 col-lg-3 bg-light d-flex flex-column chat-list">
+                <h2 class="py-3 px-4 mb-0 border-bottom">Chats</h2>
+                <ul class="list-unstyled my-3">
+                    <div class="chat-list-item">
+                        <img src={{ url_for('static', filename="assets/images/profile/profile.png") }} alt="Avatar"
+                             class="chat-avatar">
+                        <div class="chat-info">
+                            <h4 class="chat-title">Jane</h4>
+                            <p class="chat-preview">How are you</p>
+                        </div>
+                    </div>
+                    <li>
+                        <a href="#">Jane</a>
+                        <p class="text-muted mb-0">How are you?</p>
+                    </li>
+                    <li>
+                        <a href="#">Mark</a>
+                        <p class="text-muted mb-0">What's up?</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-8 col-lg-9 chat-box ">
+                <h2 class="py-3 px-4 mb-0 border-bottom">John</h2>
+                <div class="message-box">
+                    <div class="message received">
+                        <p class="mb-1">Hi there!</p>
+                        <small class="text-muted">10:30 am</small>
+                    </div>
+                    <div class="message sent">
+                        <p class="mb-1">How are you?</p>
+                        <small class="text-muted">10:32 am</small>
+                    </div>
+                    <div class="message received">
+                        <p class="mb-1">I'm good, thanks!</p>
+                        <small class="text-muted">10:33 am</small>
+                    </div>
+                </div>
+                <div class="input-box d-flex">
+                    <input type="text" class="form-control" placeholder="Type your message...">
+                    <button class="btn btn-primary">Send</button>
+                </div>
+            </div>
+        </div>
+        <!-- end container -->
+{#    </section>#}
+{% endblock %}
+{#<div class="container-fluid h-100">#}
+{#    <div class="row h-100">#}
+{#        <div class="col-md-4 col-lg-3 bg-light d-flex flex-column chat-list">#}
+{#            <h2 class="py-3 px-4 mb-0 border-bottom">Chats</h2>#}
+{#            <ul class="list-unstyled my-3">#}
+{#                    <div class="chat-list-item">#}
+{#                        <img src={{ url_for('static', filename="assets/images/profile/profile.png") }} alt="Avatar" class="chat-avatar">#}
+{#                        <div class="chat-info">#}
+{#                            <h4 class="chat-title">Jane</h4>#}
+{#                            <p class="chat-preview">How are you</p>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                <li>#}
+{#                    <a href="#">Jane</a>#}
+{#                    <p class="text-muted mb-0">How are you?</p>#}
+{#                </li>#}
+{#                <li>#}
+{#                    <a href="#">Mark</a>#}
+{#                    <p class="text-muted mb-0">What's up?</p>#}
+{#                </li>#}
+{#            </ul>#}
+{#        </div>#}
+{#        <div class="col-md-8 col-lg-9 chat-box ">#}
+{#            <h2 class="py-3 px-4 mb-0 border-bottom">John</h2>#}
+{#            <div class="message-box">#}
+{#                <div class="message received">#}
+{#                    <p class="mb-1">Hi there!</p>#}
+{#                    <small class="text-muted">10:30 am</small>#}
+{#                </div>#}
+{#                <div class="message sent">#}
+{#                    <p class="mb-1">How are you?</p>#}
+{#                    <small class="text-muted">10:32 am</small>#}
+{#                </div>#}
+{#                <div class="message received">#}
+{#                    <p class="mb-1">I'm good, thanks!</p>#}
+{#                    <small class="text-muted">10:33 am</small>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="input-box d-flex">#}
+{#                <input type="text" class="form-control" placeholder="Type your message...">#}
+{#                <button class="btn btn-primary">Send</button>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#</div>#}
+{#</body>#}
+{#<!-- Bootstrap 5 JS -->#}
+{#<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/js/bootstrap.min.js"#}
+{#        integrity="sha512-CZ/irL2V7X/SN1hNt7BzGrfbf14N1rqzGbkD+xw++1lc34l5p5"></script>#}

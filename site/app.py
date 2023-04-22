@@ -1,5 +1,9 @@
+import asyncio
+import threading
+from aiogram import executor
 from flask import Flask, render_template, request
-import sqlite3
+from main import run_bot
+import nest_asyncio
 
 app = Flask(__name__)
 
@@ -9,26 +13,20 @@ def hello_world():  # put application's code here
     return render_template('chat.html')
 
 
-@app.route('/')
+@app.route('/profile')
 @app.route('/index')
 def index():  # put application's code here
-    return render_template('index.html')
+    return render_template('base.html')
 
 
-@app.route('/signin', methods=['POST', 'GET'])
+@app.route('/', methods=['POST', 'GET'])
 def signin():  # put application's code here
     if request.method == 'GET':
         return render_template('signin.html')
     elif request.method == 'POST':
         e = request.form['email']
         p = request.form['password']
-        con = sqlite3.connect("database/users.db")
-        cur = con.cursor()
-        result = cur.execute(f"""SELECT * FROM users
-                    WHERE login = '{e}' AND password = '{p}'""").fetchall()
-        if len(result) > 0:
-            print("Login successful")
-        con.close()
+
         return '''<html>
                 <head>
                     <meta http-equiv="Refresh" content="0; URL="/">
@@ -39,8 +37,31 @@ def signin():  # put application's code here
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=5000)
 
+
+
+# def start_async_server():
+#     nest_asyncio.apply()
+#     loop = asyncio.new_event_loop()
+#     asyncio.set_event_loop(loop)
+#     loop.run_until_complete(run_bot())
+#
+#
+# class MyServer(threading.Thread):
+#     """ Класс потока для запуска парсинга"""
+#
+#     def __init__(self):
+#         super().__init__()
+#
+#     def run(self) -> None:
+#         app.run()
+#
+#
+# if __name__ == '__main__':
+#     ws = executor()
+#     # thread = threading.Thread(target=start_async_server)
+#     # thread.start()
 
 # from flask import Flask, render_template
 # from flask_socketio import SocketIO
@@ -56,5 +77,5 @@ if __name__ == '__main__':
 #     print('received message:')
 
 
-if __name__ == '__main__':
-    socketio.run(app)
+# if __name__ == '__main__':
+#     socketio.run(app)
