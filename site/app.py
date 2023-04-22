@@ -1,9 +1,8 @@
 import asyncio
 import threading
 from aiogram import executor
-from flask import Flask, render_template, request
-from main import run_bot
-import nest_asyncio
+from flask import Flask, render_template, request, redirect, flash
+from loginform import LoginForm
 
 app = Flask(__name__)
 
@@ -19,24 +18,18 @@ def index():  # put application's code here
     return render_template('base.html')
 
 
-@app.route('/', methods=['POST', 'GET'])
-def signin():  # put application's code here
-    if request.method == 'GET':
-        return render_template('signin.html')
-    elif request.method == 'POST':
-        e = request.form['email']
-        p = request.form['password']
-
-        return '''<html>
-                <head>
-                    <meta http-equiv="Refresh" content="0; URL="/">
-                </head>
-                <body>
-                </body>
-            </html>'''
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        u = form.username.data
+        p = form.password.data
+        return redirect('/profile')
+    return render_template('login.html', title='Авторизация', form=form)
 
 
 if __name__ == '__main__':
+    app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
     app.run(port=5000)
 
 
