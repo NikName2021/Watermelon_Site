@@ -1,0 +1,55 @@
+Для работы приложения требуется Docker!
+
+			Инструкция по установке на Windows 10:
+(для дальнейших действий нужно иметь интернет-соединение
+и на вашем компьютере должна быть включена виртулизация.
+Подробнее о виртуализации здесь: https://habr.com/ru/post/657677/
+Помощь для подключения здесь: https://habr.com/ru/post/657677/
+)
+
+1) Скачайте Docker официального сайта: https://www.docker.com/
+2) Установите Docker из скачанного .exe файла
+3) Перезагрузить компьютер
+4) Запустить Docker
+Если появляется ошибка WSL, то все хорошо, переходим к следующему шагу
+
+Если появляется примерно такая ошибка:
+ "docker-for-windows-error-hardware-assisted-virtualization-and-data-execution-p"
+То проверьте, включена ли виртуализация на вашем компьютере(см.выше) или попробуйте методы отсюда:
+https://stackoverflow.com/questions/39684974/docker-for-windows-error-hardware-assisted-virtualization-and-data-execution-p
+
+5)Скачайте и установите пакет обновления под пунктом 4 от сюда:
+https://learn.microsoft.com/ru-ru/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package
+
+6)Откройте PowerShell от имени администратора и выполните следующую команду:
+wsl --set-default-version 2
+
+7) Из Microsoft store установите Ubuntu 22.04.1 (скачать тут: https://apps.microsoft.com/store/detail/ubuntu-22041-lts/9PN20MSR04DW?hl=ru-ru&gl=ru)
+
+8) Откройте скачавшийся Ubuntu и создайте учетную запись пользователя и пароль для нового дистрибутива Linux.
+
+9) Перезагрузите компьютер
+
+10) Откройте Docker
+Если открывается гайд и Docker готов запускать контейнеры, переходите к следующему шагу
+
+Если появляется примерно такая ошибка: Failed to start at Docker.Engines.LinuxkitDaemonStartup.<WaitAsync>d__5.MoveNext() 
+in C:\workspaces\4.12.x\src\github.com\docker\pinata\win\src\Docker.Engines\LinuxkitDaemonStartup.cs:line 54
+
+То откройте PowerShell от имени администратора, вставьте такую команду netsh winsock reset и перезагрузите компьютер
+Подробнее здесь:https://github.com/docker/for-win/issues/12960
+
+11) Откройте директорию с моим проектом 
+12) Откройте директорию в PowerShell
+13) Запустите в ней docker-compose up --build
+
+Произойдет установка образа postgresql, и в Docker развернется контейнер c ним (контейнер будет называться также, как и директория с проектом)
+
+14) Если консоль в конце ответит такими словами, то приложение готово к работе
+
+ | 2022-11-08 17:28:40.487 UTC [1] LOG:  starting PostgreSQL 13.3 (Debian 13.3-1.pgdg100+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 8.3.0-6) 8.3.0, 64-bit
+mainproject-postgres-1  | 2022-11-08 17:28:40.487 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+mainproject-postgres-1  | 2022-11-08 17:28:40.487 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+mainproject-postgres-1  | 2022-11-08 17:28:40.490 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+mainproject-postgres-1  | 2022-11-08 17:28:40.495 UTC [26] LOG:  database system was shut down at 2022-11-08 17:28:26 UTC
+mainproject-postgres-1  | 2022-11-08 17:28:40.500 UTC [1] LOG:  database system is ready to accept connections
