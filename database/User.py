@@ -1,6 +1,5 @@
 import datetime
 import os
-
 import sqlalchemy
 from sqlalchemy import ForeignKey, create_engine, Column, String, Integer
 from sqlalchemy.orm import declarative_base, relationship
@@ -14,34 +13,24 @@ class User(DeclBase):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    telegram_id = Column(Integer, unique=True)
+    telegram_id = Column(sqlalchemy.BigInteger, unique=True)
     name = Column(String, nullable=True)
     hashed_password = Column(String, nullable=True)
     role = Column(Integer)
     created_date = Column(sqlalchemy.DateTime, default=datetime.datetime.now)
     appels = relationship('Appeals')
 
-    # def serialize(self):
-    #     return {
-    #         'id': self.id,
-    #         'id_camera': self.id_camera,
-    #         'street': self.street,
-    #         'image': 'http://localhost/static/working/bad_640/' + self.image,
-    #         'timestamp': self.timestamp,
-    #         'breakdown': self.main().breakdown,
-    #         'chance': self.main().chance
-    #     }
-
 
 class Appeals(DeclBase):
     __tablename__ = 'appeals'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    client_id = Column(Integer)
+    client_id = Column(sqlalchemy.BigInteger)
     client_name = Column(String, nullable=True)
     operator_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     type = Column(Integer, nullable=True)
     status = Column(Integer)
+    user_status = Column(sqlalchemy.Boolean, default=False)
     created_date = Column(sqlalchemy.DateTime, default=datetime.datetime.now)
     messages = relationship("Messages")
 

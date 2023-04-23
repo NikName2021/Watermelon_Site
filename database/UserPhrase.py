@@ -21,7 +21,7 @@ class UserPhrases(DeclBase):
     __tablename__ = 'user_phrases'
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
-    user_id = sqlalchemy.Column(sqlalchemy.Integer)
+    user_id = sqlalchemy.Column(sqlalchemy.BigInteger)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
     phrase_id = sqlalchemy.Column(sqlalchemy.Integer,
                                   ForeignKey('phrases.id'))

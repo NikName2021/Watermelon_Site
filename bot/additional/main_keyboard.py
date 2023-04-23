@@ -1,6 +1,6 @@
 from aiogram import types
 from aiogram.types import KeyboardButton
-from bot.connection import admins
+from bot.connection import main_user
 
 
 async def user_keyboard():
@@ -23,7 +23,7 @@ async def start_ad_op(message):
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.add(button_2)
 
-    if message in admins:
+    if message in main_user.admins:
         keyboard.add(KeyboardButton(text='Ответить'),
                      KeyboardButton(text='Команды admin'))
     else:

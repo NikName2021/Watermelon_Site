@@ -1,9 +1,6 @@
-import asyncio
-
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from werkzeug.security import generate_password_hash
-
 from bot.additional import *
 from bot.connection import *
 
@@ -14,7 +11,7 @@ async def commands_admin(message: types.Message):
         Функция используется для вывода кнопок клавиатуры для команд admin
     """
 
-    if message.from_user.id in admins:
+    if message.from_user.id in main_user.admins:
         keyboard = await main_keyboard.admin_first()
         await message.answer("""Команды admin""", reply_markup=keyboard)
     else:
@@ -24,12 +21,12 @@ async def commands_admin(message: types.Message):
 # @dp.message_handler(Text(equals='Просмотр операторов'))
 async def viewing_ad_and_op(message: types.Message):
     """
-        Функция используется для вывода операторов и админов
+        Функция используется для вывода операторов
     """
-    if message.from_user.id in admins:
-        if operators:
+    if message.from_user.id in main_user.admins:
+        if main_user.operators:
             information_oper = '\n'.join([f"{i.telegram_id} - {i.name} (/del_{i.telegram_id})" for i in
-                                          db.query(User).filter(User.role == role_user.ROLE_USERS['operator']).all()])
+                    db.query(User).filter(User.role == role_user.ROLE_USERS['operator']).all()])
             await message.answer(f"""
 <b>Операторы:</b>
 {information_oper}""")
@@ -44,7 +41,7 @@ async def add_operator(message: types.Message):
     """
         Функция входа в машину ожиданий для добавления оператора
     """
-    if message.from_user.id in admins:
+    if message.from_user.id in main_user.admins:
         await machine.Opa.id.set()
         await message.answer("Введите id нового оператора")
     else:
@@ -54,12 +51,12 @@ async def add_operator(message: types.Message):
 # @dp.message_handler(state=machine.Opa.id)
 async def add_operator_id(message: types.Message, state: FSMContext):
     """
-        Функция используется для ввода имени оператора
+        Функция используется для ввода id оператора
     """
     if not message.text.isdigit():
         await message.answer("В id содержатся буквы, попробуй снова")
         await asyncio.sleep(1)
-    elif int(message.text) in operators + admins:
+    elif int(message.text) in main_user.operators + main_user.admins:
         await message.answer("Такой оператор существует, введи другой id")
         await asyncio.sleep(1)
     else:
@@ -72,7 +69,7 @@ async def add_operator_id(message: types.Message, state: FSMContext):
 # @dp.message_handler(state=machine.Opa.password)
 async def add_operator_password(message: types.Message, state: FSMContext):
     """
-        Функция используется для ввода имени оператора
+        Функция используется для ввода password оператора
     """
     if len(message.text) > 8:
         async with state.proxy() as data:
@@ -99,7 +96,7 @@ async def add_operator_name(message: types.Message, state: FSMContext):
     user.hashed_password = password
     db.add(user)
     db.commit()
-    await update_operators()
+    main_user.ping()
     await message.answer(f"Оператор {ida}({message.text}) успешно добавлен.")
     await state.finish()
 
@@ -113,7 +110,7 @@ async def del_operator(message: types.Message):
     operator = db.query(User).where(User.telegram_id == ids).first()
     db.delete(operator)
     db.commit()
-    await update_operators()
+    main_user.ping()
     await message.answer(f"Оператор {ids} удален")
 
 

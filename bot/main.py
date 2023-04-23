@@ -5,23 +5,21 @@ from additional import *
 
 
 async def on_startup(dp):
-
     dp.filters_factory.bind(main_filters.Load)
     dp.filters_factory.bind(main_filters.Ans)
     dp.filters_factory.bind(main_filters.Dele)
     dp.filters_factory.bind(main_filters.Archive)
     dp.filters_factory.bind(main_filters.Main)
-    # dp.filters_factory.bind(main_filters.Off_del)
-    # dp.filters_factory.bind(main_filters.Que)
 
+
+async def on_shutdown():
+    db.close()
+    print('Соединение закрыто')
 
 add.register_handler_add(dp)
 user.register_handler_user(dp)
 operator.register_handler_operator(dp)
 admin.register_handler_admin(dp)
-
-
-# operator.register_handler_operator(dp)
 
 
 @dp.message_handler(content_types=types.ContentTypes.TEXT)
@@ -37,7 +35,7 @@ async def if_the_text(msg: types.Message):
 
 
 def run_bot():
-    executor.start_polling(dp, skip_updates=False, on_startup=on_startup)
+    executor.start_polling(dp, skip_updates=False, on_startup=on_startup, on_shutdown=on_shutdown)
 
 
 if __name__ == '__main__':

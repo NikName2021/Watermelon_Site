@@ -1,9 +1,7 @@
-from datetime import datetime, date
+from datetime import date
 import re
 from random import choice
-
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-
 from bot.config import *
 from bot.connection import *
 
@@ -30,7 +28,7 @@ async def get_phrase(user_tg):
                 db.commit()
             phrase = choice(variants)
             while phrase.id in [i.phrase_id for i in checks]:
-                phrase = choice(EVERYDAY)
+                phrase = choice(variants)
             db.add(UserPhrases(user_id=user_tg, phrase_id=phrase.id))
             db.commit()
             return phrase.text
@@ -63,32 +61,29 @@ async def send_add(message, i):
 <b>Время</B> {i.created_date.strftime("%Y-%m-%d")}""", reply_markup=keyboard_tc)
 
 
-async def contin(message, i, typ):
+async def contin(message, i):
+    typ = HElP_FOR_KEYBOARD[i.type]
     keyboard_tc = InlineKeyboardMarkup(resize_keyboard=True).add(
-        InlineKeyboardButton('Продолжить', callback_data=f'ans-{i[1]}-{typ}')).add(
-        InlineKeyboardButton('В архив', callback_data=f'archive-{i[1]}-{typ}'))
-
-    if typ == "Обращение":
-        typ = "️🛑🆘🆘🆘❌❌Обращение⛔️⛔️🛑🆘🆘🆘🛑"
-    if i[6] != "Yes":
-        await message.answer(f"""<b>{typ}️</b>
-<b>Отправитель:</b> {i[2]} - |**{str(i[1])[6:]}|
-<b>Предложение:</b> {i[3]}
+        InlineKeyboardButton('Продолжить', callback_data=f'ans-{i.id}-{typ}')).add(
+        InlineKeyboardButton('В архив', callback_data=f'archive-{i.id}-{typ}'))
+    mes = db.query(Messages).where(Messages.appeal_id == i.id).first()
+    await message.answer(f"""<b>{DETERMINATION[i.type]}️</b>
+<b>Отправитель:</b> {i.client_name} - |**{str(i.client_id)[6:]}|
+<b>Первое сообщение:</b> {mes.text}
 """, reply_markup=keyboard_tc)
 
 
-async def mailing(message, operator, typ):
+async def mailing(message, operator, i):
+    typ = HElP_FOR_KEYBOARD[i.type]
     keyboard_tc = InlineKeyboardMarkup(resize_keyboard=True).add(
-        InlineKeyboardButton('Ответить', callback_data=f'ans-{message.from_user.id}-{typ}')).add(
-        InlineKeyboardButton('Удалить', callback_data=f'del-{message.from_user.id}-{typ}'))
+        InlineKeyboardButton('Ответить', callback_data=f'ans-{i.id}-{typ}')).add(
+        InlineKeyboardButton('Удалить', callback_data=f'del-{i.id}-{typ}'))
 
-    if typ == "Обращение":
-        typ = "⛔️⛔️🛑🆘🆘🆘❌❌Обращение⛔️⛔️🛑🆘🆘🆘❌❌"
     await bot.send_message(operator,
-                           f"""<b>{typ}</b>
-<b>Отправитель:</b> {message.from_user.first_name} - |**{str(message.from_user.id)[6:]}|
+                           f"""<b>{DETERMINATION[i.type]}</b>
+<b>Отправитель:</b> {i.client_name} - |**{str(i.client_id)[6:]}|
 <b>Текст обращения:</b>{message.text}
-<b>Время</B> {message.date}""", reply_markup=keyboard_tc)
+<b>Время</B> {i.created_date.strftime("%Y-%m-%d")}""", reply_markup=keyboard_tc)
 
 
 async def end(operator, name, ids, keyboard):
