@@ -10,6 +10,7 @@ async def get_phrase(user_tg):
     """Функция формирования фразы дня"""
     checks = db.query(UserPhrases).filter(UserPhrases.user_id == user_tg).all()
     variants = db.query(Phrase).all()
+    print(variants)
     if not checks:
         phrase = choice(variants)
         db.add(UserPhrases(user_id=user_tg, phrase_id=phrase.id))

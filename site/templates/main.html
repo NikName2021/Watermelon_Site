@@ -1,0 +1,15 @@
+{% extends "temp.html" %}
+
+{% block content %}
+    <h3>Панель администратора</h3>
+	<p>Выберите нужную функцию в меню</p>
+{% endblock %}
+
+{% block user %}
+    <h3>Данные пользователя:</h3>
+	<p>Имя пользователя: {{ login }}</p>
+	<p>Роль: {{ is_admin }}</p>
+	<p>
+		<a href="/logout"><span style="margin-left:5px;">Выйти из аккаунта</span></a>
+	</p>
+{% endblock %}

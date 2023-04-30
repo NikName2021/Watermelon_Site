@@ -1,16 +1,16 @@
 {% extends "temp.html" %}
 
 {% block content %}
-	<form action="/addp" target="_blank">
+	<form action="/addu" target="_blank">
 		<center><button class="btn btn-primary">Добавить</button></center>
 	</form>
-	<form action="/delp" target="_blank">
+	<form action="/delu" target="_blank">
 		<center><button class="btn btn-primary">Удалить</button></center>
 	</form>
     {% for item in phrases %}
 		<div class="alert alert-success" role="alert">
-			<div>№ {{item[0] + 1}}</div>
-			<div>{{item[1]}}</div>
+			<div>Логин: {{item[0]}}</div>
+			<div>Администратор: {{item[2]}}</div>
 		</div>
 		<p></p>
     {% endfor %}
