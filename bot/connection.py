@@ -1,3 +1,4 @@
+import os
 import asyncio
 import nest_asyncio
 from aiogram import Dispatcher, Bot, types
@@ -6,7 +7,7 @@ from database.__all_models import *
 from database.db_session import create_session
 from helpers import role_user
 from dotenv import load_dotenv
-import os
+
 
 load_dotenv()
 
