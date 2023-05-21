@@ -5,3 +5,4 @@
 4)Запустить файл User.py, UserPhrase.py (директория database)
 5)Запустить файл Seeder_Admin.py (директория database)
 6)Запустить main.py (директория bot)
+7)Бот готов :)
