@@ -1,0 +1,7 @@
+1)Развернуть docker контейнер
+2)Переименовать .env.prod в .env
+3)Вставить токен тг-бота в переменную BOT_TOKEN в файле .env
+5)Установить библиотеки из requirements.txt
+4)Запустить файл User.py, UserPhrase.py (директория database)
+5)Запустить файл Seeder_Admin.py (директория database)
+6)Запустить main.py (директория bot)
