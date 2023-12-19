@@ -2,11 +2,10 @@ import datetime
 import os
 import sqlalchemy
 from sqlalchemy import ForeignKey, create_engine, Column, String, Integer
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import relationship
 from sqlalchemy.engine import URL
 from dotenv import load_dotenv
-
-DeclBase = declarative_base()
+from .dec_db import DeclBase
 
 
 class User(DeclBase):
@@ -15,7 +14,6 @@ class User(DeclBase):
     id = Column(Integer, primary_key=True, autoincrement=True)
     telegram_id = Column(sqlalchemy.BigInteger, unique=True)
     name = Column(String, nullable=True)
-    hashed_password = Column(String, nullable=True)
     role = Column(Integer)
     created_date = Column(sqlalchemy.DateTime, default=datetime.datetime.now)
     appels = relationship('Appeals')

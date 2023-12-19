@@ -1,13 +1,11 @@
-import random
-
 import requests
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.types import KeyboardButton
-from aiogram.types.input_file import InputFile
-from bot.additional import *
-from bot.connection import *
-from bot.config import *
+from database.User import Appeals, Messages
+from additional import *
+from connection import *
+from config import *
 
 
 # @dp.message_handler(Text(equals="Хочу получить послание дня"))

@@ -1,12 +1,8 @@
 import datetime
-import os
 import sqlalchemy
-from sqlalchemy import ForeignKey, create_engine
-from sqlalchemy.orm import declarative_base, relationship
-from sqlalchemy.engine import URL
-from dotenv import load_dotenv
-
-DeclBase = declarative_base()
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
+from .dec_db import DeclBase
 
 
 class Phrase(DeclBase):
@@ -25,17 +21,3 @@ class UserPhrases(DeclBase):
     created_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now)
     phrase_id = sqlalchemy.Column(sqlalchemy.Integer,
                                   ForeignKey('phrases.id'))
-
-
-if __name__ == '__main__':
-    load_dotenv()
-    db_path = URL.create(
-        drivername="postgresql",
-        username=os.getenv("POSTGRES_USER"),
-        host="localhost",
-        port=os.getenv("POSTGRES_PORT"),
-        database=os.getenv("POSTGRES_DATABASE"),
-        password=os.getenv("POSTGRES_PASSWORD")
-    )
-    engine = create_engine(db_path)
-    DeclBase.metadata.create_all(engine)

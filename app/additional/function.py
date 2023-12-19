@@ -1,9 +1,12 @@
-from datetime import date
-import re
-from random import choice
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from bot.config import *
-from bot.connection import *
+import re
+from datetime import date
+from random import choice
+
+from config import *
+from database.User import Messages
+from database.UserPhrase import UserPhrases, Phrase
+from connection import *
 
 
 async def get_phrase(user_tg):

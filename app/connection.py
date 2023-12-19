@@ -3,11 +3,11 @@ import asyncio
 import nest_asyncio
 from aiogram import Dispatcher, Bot, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from database.__all_models import *
+from database.User import User
 from database.db_session import create_session
-from helpers import role_user
+from database import run_migrate, run_seeder
 from dotenv import load_dotenv
-
+from config import ROLE_USERS
 
 load_dotenv()
 
@@ -24,9 +24,9 @@ class ListMainPeople:
         после добавления нового админа или оператора"""
 
         self.operators = [i[0] for i in
-                          db.query(User.telegram_id).filter(User.role == role_user.ROLE_USERS['operator']).all()]
+                          db.query(User.telegram_id).filter(User.role == ROLE_USERS['operator']).all()]
         self.admins = [i[0] for i in
-                       db.query(User.telegram_id).filter(User.role == role_user.ROLE_USERS['admin']).all()]
+                       db.query(User.telegram_id).filter(User.role == ROLE_USERS['admin']).all()]
 
     def ping(self):
         nest_asyncio.apply()
@@ -40,5 +40,7 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 bot = Bot(token=BOT_TOKEN, parse_mode=types.ParseMode.HTML)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
+run_migrate()
+# run_seeder()
 db = create_session()
 main_user = ListMainPeople()

@@ -1,6 +1,6 @@
 from aiogram import types
 from aiogram.types import KeyboardButton
-from bot.connection import main_user
+from connection import main_user
 
 
 async def user_keyboard():

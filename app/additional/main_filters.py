@@ -1,6 +1,6 @@
 from aiogram import types
 from aiogram.dispatcher.filters import BoundFilter
-from bot.connection import main_user
+from connection import main_user
 
 
 class Load(BoundFilter):

@@ -1,10 +1,11 @@
 from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, KeyboardButton
-from aiogram.dispatcher import FSMContext, filters
+from aiogram.dispatcher import FSMContext
 
-from bot.additional import *
-from bot.connection import *
-from bot.config import *
+from database.User import Appeals, Messages
+from additional import *
+from connection import *
+from config import *
 
 
 # @dp.message_handler(commands="answer")

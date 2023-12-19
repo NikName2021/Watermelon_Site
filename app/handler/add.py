@@ -1,8 +1,9 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from bot.additional import *
-from bot.connection import *
+from additional import *
+from connection import *
+from database.User import Appeals
 from aiogram import Dispatcher
 
 
@@ -80,7 +81,7 @@ async def end_conversation(message: types.Message, state: FSMContext):
         try:
             async with state.proxy() as data:
                 id_app = data["appeal"]
-        except:
+        except Exception:
             await message.answer("Надеемся, мы смогли вам помочь.", reply_markup=keyboard)
             return
 

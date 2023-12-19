@@ -1,7 +1,7 @@
-from werkzeug.security import generate_password_hash
-from __all_models import *
+from .User import User
+from .UserPhrase import Phrase
 from database.db_session import create_session
-from helpers import *
+from config import ROLE_USERS
 
 EVERYDAY = ['Я рада, что ты есть в этом мире',
             'Я с тобой',
@@ -52,16 +52,19 @@ EVERYDAY = ['Я рада, что ты есть в этом мире',
             'Я вижу твои старания',
             'Ты сильнее, чем ты думаешь']
 
-db = create_session()
 
-user = User()
-user.name = "Дима"
-user.telegram_id = 1232435163
-user.role = role_user.ROLE_USERS['admin']
-user.hashed_password = generate_password_hash('Fine_2022')
-db.add(user)
+def run_seeder():
+    db = create_session()
 
-for i in EVERYDAY:
-    ph = Phrase(text=i)
-    db.add(ph)
-db.commit()
+    user = User()
+    user.name = "Дима"
+    user.telegram_id = 1232435163
+    user.role = ROLE_USERS['admin']
+    db.add(user)
+
+    for i in EVERYDAY:
+        ph = Phrase(text=i)
+        db.add(ph)
+    db.commit()
+
+    print('Миграция выполнена')

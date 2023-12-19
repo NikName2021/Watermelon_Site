@@ -1,19 +1,41 @@
 version: '3.7'
 services:
-    postgres:
-        image: postgres:13.3
-        restart: always
-        environment:
-            POSTGRES_USER: ${POSTGRES_USER}
-            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-            POSTGRES_DB: ${POSTGRES_DATABASE}
-        logging:
-          options:
-            max-size: 10m
-            max-file: "3"
-        ports:
-          - '5440:5432'
+
+  postgres:
+    image: postgres:13.3
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+    volumes:
+      - ${POSTGRES_VOLUME}:/var/lib/postgresql/data
+    networks:
+      - bot-network
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - '5440:5432'
+
+  python:
+    container_name: bot_python
+    build:
+      dockerfile: Dockerfile
+    environment:
+      PYTHONUNBUFFERED: 1
+
+    depends_on:
+      - postgres
+    volumes:
+      - ${PROJECT_VOLUME_SRC}:/app:cached
+    networks:
+      - bot-network
 
 volumes:
-  db:
-    driver: local
+  bot_db_volume:
+    external: false
+networks:
+  bot-network:
+    driver: bridge

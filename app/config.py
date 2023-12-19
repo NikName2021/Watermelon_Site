@@ -148,6 +148,13 @@ TYPE = {
     'SOS! Мне нужна срочная помощь': 3
 }
 
+ROLE_USERS = {
+    'admin': 1,
+    'operator': 2,
+    'user': 3
+}
+
+
 TYPE_BELONG = {"Вопросы": 1, "Предложения": 2, "Обращения": 3}
 DETERMINATION = {1: "Вопрос", 2: "Предложение", 3: "⛔️⛔️🛑🆘🆘🆘❌❌Обращение⛔️⛔️🛑🆘🆘🆘❌❌"}
 HElP_FOR_KEYBOARD = {1: "questions", 2: "offers", 3: "appels"}

@@ -32,6 +32,7 @@ async def if_the_text(msg: types.Message):
         pass
     else:
         await msg.answer('Неизвестная для меня команда :(')
+        print(msg.from_user)
 
 
 def run_bot():
