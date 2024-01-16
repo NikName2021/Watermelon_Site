@@ -1,6 +1,6 @@
-from .User import User
+from .models import User
 from .UserPhrase import Phrase
-from database.db_session import create_session
+from .dec_db import create_session
 from config import ROLE_USERS
 
 EVERYDAY = ['Я рада, что ты есть в этом мире',
@@ -57,7 +57,7 @@ def run_seeder():
     db = create_session()
 
     user = User()
-    user.name = "Дима"
+    user.name = "name"
     user.telegram_id = 1232435163
     user.role = ROLE_USERS['admin']
     db.add(user)

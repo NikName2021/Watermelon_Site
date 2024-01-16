@@ -1,12 +1,11 @@
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import re
 from datetime import date
 from random import choice
-
+from additional.inline_keybords import *
 from config import *
-from database.User import Messages
 from database.UserPhrase import UserPhrases, Phrase
 from connection import *
+from crud import *
 
 
 async def get_phrase(user_tg):
@@ -51,42 +50,53 @@ async def check_filter(mess):
             return 1
 
 
-async def send_add(message, i):
-    typ = HElP_FOR_KEYBOARD[i.type]
-    keyboard_tc = InlineKeyboardMarkup(resize_keyboard=True).add(
-        InlineKeyboardButton('Ответить', callback_data=f'ans-{i.id}-{typ}')).add(
-        InlineKeyboardButton('Удалить', callback_data=f'del-{i.id}-{typ}'))
-    mes = db.query(Messages).where(Messages.appeal_id == i.id).first()
-
-    await message.answer(f"""<b>{DETERMINATION[i.type]}</b>
-<b>Отправитель:</b> {i.client_name} - |**{str(i.client_id)[6:]}|
-<b>Текст обращения:</b>{mes.text}
-<b>Время</B> {i.created_date.strftime("%Y-%m-%d")}""", reply_markup=keyboard_tc)
+async def information_appeal(appeal, text):
+    return f"""<b>{DETERMINATION[appeal.type]}</b>
+<b>ID обращения:</b> {appeal.id}
+<b>Отправитель:</b> {appeal.client_name} - |**{str(appeal.client_id)[6:]}|
+<b>Текст обращения:</b>{text}
+<b>Время</B> {appeal.created_date.strftime("%d.%m.%Y %H-%M")}"""
 
 
-async def contin(message, i):
-    typ = HElP_FOR_KEYBOARD[i.type]
-    keyboard_tc = InlineKeyboardMarkup(resize_keyboard=True).add(
-        InlineKeyboardButton('Продолжить', callback_data=f'ans-{i.id}-{typ}')).add(
-        InlineKeyboardButton('В архив', callback_data=f'archive-{i.id}-{typ}'))
-    mes = db.query(Messages).where(Messages.appeal_id == i.id).first()
-    await message.answer(f"""<b>{DETERMINATION[i.type]}️</b>
-<b>Отправитель:</b> {i.client_name} - |**{str(i.client_id)[6:]}|
-<b>Первое сообщение:</b> {mes.text}
-""", reply_markup=keyboard_tc)
+async def send_add(message, appeal):
+    typ = HElP_FOR_KEYBOARD[appeal.type]
+    keyboard_tc = await sorting_mailing(appeal.id, typ)
+    mes = await messageRequests.first_message(appeal.id)
+
+    await message.answer(await information_appeal(appeal, mes.text), reply_markup=keyboard_tc)
 
 
-async def mailing(message, operator, i):
-    typ = HElP_FOR_KEYBOARD[i.type]
-    keyboard_tc = InlineKeyboardMarkup(resize_keyboard=True).add(
-        InlineKeyboardButton('Ответить', callback_data=f'ans-{i.id}-{typ}')).add(
-        InlineKeyboardButton('Удалить', callback_data=f'del-{i.id}-{typ}'))
+async def continue_appeal(message, appeal):
+    typ = HElP_FOR_KEYBOARD[appeal.type]
+    mes = await messageRequests.first_message(appeal.id)
+    await message.answer(await information_appeal(appeal, mes.text),
+                         reply_markup=await continue_appeal_kb(appeal.id, typ))
 
-    await bot.send_message(operator,
-                           f"""<b>{DETERMINATION[i.type]}</b>
-<b>Отправитель:</b> {i.client_name} - |**{str(i.client_id)[6:]}|
-<b>Текст обращения:</b>{message.text}
-<b>Время</B> {i.created_date.strftime("%Y-%m-%d")}""", reply_markup=keyboard_tc)
+
+async def mailing_for_sorting(message, admin, appeal):
+    typ = HElP_FOR_KEYBOARD[appeal.type]
+    await bot.send_message(admin, await information_appeal(appeal, message.text),
+                           reply_markup=await sorting_mailing(appeal.id, typ))
+
+
+async def mailing_operator(operator_id, appeal, text):
+    typ = HElP_FOR_KEYBOARD[appeal.type]
+    await bot.send_message(operator_id, await information_appeal(appeal, text),
+                           reply_markup=await keyboard_to_operator_send(appeal.id, typ))
+
+
+async def information_for_admin(appeal):
+    if appeal.operator_id:
+        operator = await userRequests.get_user(appeal.operator_id)
+        operator_information = f"<b>Оператор:</b> {operator.name} || {operator.telegram_id}"
+    else:
+        operator_information = f"<b>Оператор:</b> Оператор не назначен"
+    last_message = await messageRequests.first_message(appeal.id)
+    return f"""{await information_appeal(appeal, last_message.text)}
+    
+{operator_information}
+<b>Статус клиента:</b> {appeal.user_status}
+<b>Статус обращения:</b> {STATUS_REVERSE[appeal.status]}"""
 
 
 async def end(operator, name, ids, keyboard):

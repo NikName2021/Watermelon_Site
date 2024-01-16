@@ -10,7 +10,6 @@ class Question(StatesGroup):
 
 
 class AnswerOffers(StatesGroup):
-
     text = State()
 
 
@@ -29,3 +28,11 @@ class Opa(StatesGroup):
         """
     id = State()
     name = State()
+
+
+class InfoAppeal(StatesGroup):
+    """
+        Класс машины состояний,
+        который ожидает id обращения
+        """
+    id = State()

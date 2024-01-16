@@ -3,7 +3,7 @@ from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from additional import *
 from connection import *
-from database.User import Appeals
+from database.models import Appeals
 from aiogram import Dispatcher
 
 
@@ -14,16 +14,21 @@ async def cmd_start(message: types.Message):
     Данная функция используется для приветственной фразы и создания кнопок клавиатуры
     """
 
-    if message.from_user.id in main_user.admins or message.from_user.id in main_user.operators:
+    if message.from_user.id in main_user.admins + main_user.operators:
         keyboard = await main_keyboard.start_ad_op(message.from_user.id)
     else:
         keyboard = await main_keyboard.user_keyboard()
+
     if message.text == "Вернуться":
         await message.answer("Привет!", reply_markup=keyboard)
     else:
         await message.answer('Привет! Я помогу тебе справиться со всеми переживаниями и проблемами.'
                              ' Давай определимся что случилось, для этого выбери пункт в меню ниже.',
                              reply_markup=keyboard)
+
+    if message.text == "/start" and message.from_user.id not in main_user.admins + main_user.operators:
+        await message.answer("""Если у тебя случилось что-то серьезное, то нажми эту кнопку ⬇️.""",
+                             reply_markup=await inline_keybords.SOS_kb())
 
 
 # @dp.callback_query_handler(text="Out", state="*")

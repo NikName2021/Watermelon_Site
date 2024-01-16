@@ -7,6 +7,7 @@ class Load(BoundFilter):
     """
         Класс - фильтр, обнаруживающий команду для удаления оператора
     """
+
     async def check(self, message: types.Message):
         tx = message.text.split('_')
         if tx[0] == "/del" and int(tx[1]) in main_user.operators:
@@ -20,6 +21,7 @@ class Ans(BoundFilter):
         Класс - фильтр, позволяющий отследить
         нажатие кнопки "Ответить" для оператора
     """
+
     async def check(self, call: types.CallbackQuery):
         tx = call.data.split("-")
         if tx[0] == "ans":
@@ -32,6 +34,7 @@ class Dele(BoundFilter):
         Класс - фильтр, позволяющий отследить
         нажатие кнопки "Удалить обращение" для оператора
     """
+
     async def check(self, call: types.CallbackQuery):
         tx = call.data.split("-")
         if tx[0] == "del":
@@ -44,6 +47,7 @@ class Archive(BoundFilter):
         Класс - фильтр, позволяющий отследить
         нажатие кнопки "Удалить обращение" для оператора
     """
+
     async def check(self, call: types.CallbackQuery):
         tx = call.data.split("-")
         if tx[0] == "archive":
@@ -56,6 +60,7 @@ class Main(BoundFilter):
         Класс - фильтр, позволяющий отследить
         нажатие кнопки "Удалить обращение" для оператора
     """
+
     async def check(self, call: types.CallbackQuery):
         tx = call.data.split("-")
         if tx[0] == "main":
@@ -63,3 +68,35 @@ class Main(BoundFilter):
         return False
 
 
+class SendTo(BoundFilter):
+    """
+        Класс - фильтр, позволяющий отследить
+        нажатие кнопки "Отправить оператору" для админа
+    """
+
+    async def check(self, call: types.CallbackQuery):
+        tx = call.data.split("-")
+        if tx[0] == "sendBy":
+            return True
+        return False
+
+
+class SendToOperator(BoundFilter):
+    """
+        Класс - фильтр, позволяющий отследить
+        нажатие кнопки "Отправить оператору" для админа
+    """
+
+    async def check(self, call: types.CallbackQuery):
+        tx = call.data.split("-")
+        if tx[0] == "sendNewTo":
+            return True
+        return False
+
+
+class CheckMessages(BoundFilter):
+    async def check(self, call: types.CallbackQuery):
+        tx = call.data.split("-")
+        if tx[0] == "messages":
+            return True
+        return False

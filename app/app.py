@@ -5,16 +5,20 @@ from additional import *
 
 
 async def on_startup(dp):
+    dp.filters_factory.bind(main_filters.SendToOperator)
+    dp.filters_factory.bind(main_filters.SendTo)
     dp.filters_factory.bind(main_filters.Load)
     dp.filters_factory.bind(main_filters.Ans)
     dp.filters_factory.bind(main_filters.Dele)
     dp.filters_factory.bind(main_filters.Archive)
+    dp.filters_factory.bind(main_filters.CheckMessages)
     dp.filters_factory.bind(main_filters.Main)
 
 
 async def on_shutdown():
     db.close()
     print('Соединение закрыто')
+
 
 add.register_handler_add(dp)
 user.register_handler_user(dp)
@@ -32,7 +36,6 @@ async def if_the_text(msg: types.Message):
         pass
     else:
         await msg.answer('Неизвестная для меня команда :(')
-        print(msg.from_user)
 
 
 def run_bot():

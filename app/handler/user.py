@@ -2,13 +2,16 @@ import requests
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.types import KeyboardButton
-from database.User import Appeals, Messages
+from database.models import Appeals, Messages
 from additional import *
 from connection import *
 from config import *
+from crud.userRequests import *
+from crud.messageRequests import *
+from crud.appealRequests import *
 
 
-# @dp.message_handler(Text(equals="Хочу получить послание дня"))
+# @dp.message_handler(Text(equals="Послание дня"))
 async def out_phrase(message: types.Message):
     """
     Функция для вывода фразы дня
@@ -18,7 +21,7 @@ async def out_phrase(message: types.Message):
 {mess}""")
 
 
-# @dp.message_handler(Text(equals="Получить случайную цитату"))
+# @dp.message_handler(Text(equals="Случайная цитата"))
 async def random_quote(message: types.Message):
     """
     Функция для вывода случайной цитаты из api.forismatic.com
@@ -37,6 +40,15 @@ async def question(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data["topic"] = TYPE[message.text]
     await message.answer(ANSWERS[TYPE[message.text]])
+
+
+# @dp.message_handler(Text(equals='У меня есть вопрос'))
+async def question_call(call: types.CallbackQuery, state: FSMContext):
+    await machine.Question.text.set()
+    # вход в машину ожиданий сообщений пользователя
+    async with state.proxy() as data:
+        data["topic"] = 3
+    await call.message.answer(ANSWERS[3])
 
 
 # @dp.message_handler(state=machine.Question.text)
@@ -61,15 +73,15 @@ async def questions_send_mess(message: types.Message, state: FSMContext):
             topic = data["topic"]
 
         await message.answer(ANSWERS_FINAL[topic], reply_markup=keyboard)
-        print(message.from_user.id)
         app = Appeals(client_id=message.from_user.id, client_name=message.from_user.full_name, type=topic, status=0)
         # создание записи обращения в бд
         db.add(app)
         db.flush()
         db.add(Messages(appeal_id=app.id, operator_type=False, text=message.text))
         db.commit()
-        for operator in main_user.operators:
-            await function.mailing(message, operator, app)
+
+        for admin in main_user.admins:
+            await function.mailing_for_sorting(message, admin, app)
             # отправка операторам
 
     await state.finish()
@@ -100,22 +112,23 @@ async def user_send_mess(message: types.Message, state: FSMContext):
 
     async with state.proxy() as data:
         id_app = data["appeal"]
+    await message_create(id_app, message.text, False)
 
-    db.add(Messages(appeal_id=id_app, operator_type=False, text=message.text))
-    app = db.query(Appeals).get(id_app)
-    app.status = 0
-    db.commit()
-    operator = db.query(User).get(app.operator_id)
-    await bot.send_message(operator.telegram_id, f"""Сообщение по {MESS_ABOUT[app.type]} от {
-    app.client_name} - |**{str(app.client_id)[6:]}|
+    appeal = await get_appeal(id_app)
+    await set_status(appeal, STATUS['work'])
+    operator = await get_user(appeal.operator_id)
+
+    await bot.send_message(operator.telegram_id, f"""Сообщение по {MESS_ABOUT[appeal.type]} от {
+    appeal.client_name} - |**{str(appeal.client_id)[6:]}|
 {message.text}""")
 
 
 def register_handler_user(dp: Dispatcher):
     dp.register_message_handler(out_phrase, commands="phrase")
-    dp.register_message_handler(out_phrase, Text(equals="Хочу получить послание дня"))
+    dp.register_message_handler(out_phrase, Text(equals="Послание дня"))
     dp.register_message_handler(random_quote, commands="quote")
-    dp.register_message_handler(random_quote, Text(equals="Хочу получить цитату"))
+    dp.register_message_handler(random_quote, Text(equals="Случайная цитата"))
+    dp.register_callback_query_handler(question_call, text="help_keyboard")
     dp.register_message_handler(question, Text(
         equals=['У меня есть вопрос', 'SOS! Мне нужна срочная помощь', 'Есть предложение']))
     dp.register_message_handler(questions_send_mess, state=machine.Question.text)

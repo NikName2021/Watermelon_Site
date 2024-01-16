@@ -3,9 +3,8 @@ import asyncio
 import nest_asyncio
 from aiogram import Dispatcher, Bot, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from database.User import User
-from database.db_session import create_session
-from database import run_migrate, run_seeder
+from database.models import User
+from database import run_migrate, run_seeder, create_session
 from dotenv import load_dotenv
 from config import ROLE_USERS
 

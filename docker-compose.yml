@@ -11,7 +11,7 @@ services:
     volumes:
       - ${POSTGRES_VOLUME}:/var/lib/postgresql/data
     networks:
-      - bot-network
+      - family-network
     logging:
       options:
         max-size: 10m
@@ -20,7 +20,7 @@ services:
       - '5440:5432'
 
   python:
-    container_name: bot_python
+    container_name: family_python
     build:
       dockerfile: Dockerfile
     environment:
@@ -31,11 +31,11 @@ services:
     volumes:
       - ${PROJECT_VOLUME_SRC}:/app:cached
     networks:
-      - bot-network
+      - family-network
 
 volumes:
-  bot_db_volume:
+  family_db_volume:
     external: false
 networks:
-  bot-network:
+  family-network:
     driver: bridge
